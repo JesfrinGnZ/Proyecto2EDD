@@ -1,22 +1,20 @@
 <factura>
-<NoFactura>15</NoFactura>
+<NoFactura>7</NoFactura>
 <Nit>123456</Nit>
 <Fecha>12-12-19</Fecha>
 </factura>
 
 <factura>
-<NoFactura>51</NoFactura>
+<NoFactura>25</NoFactura>
 <Nit>123456</Nit>
 <Fecha>12-12-19</Fecha>
 </factura>
-
 
 <factura>
 <NoFactura>27</NoFactura>
 <Nit>123454</Nit>
 <Fecha>12-12-19</Fecha>
 </factura>
-
 
 <factura>
 <NoFactura>15</NoFactura>
@@ -37,12 +35,12 @@
 <Fecha>12-12-19</Fecha>
 </factura>
 
-
 <factura>
 <NoFactura>14</NoFactura>
 <Nit>123459</Nit>
 <Fecha>12-12-19</Fecha>
 </factura>
+
 
 <factura>
 <NoFactura>29</NoFactura>
@@ -50,11 +48,13 @@
 <Fecha>12-12-19</Fecha>
 </factura>
 
+
 <factura>
 <NoFactura>10</NoFactura>
 <Nit>123459</Nit>
 <Fecha>12-12-19</Fecha>
 </factura>
+
 
 <factura>
 <NoFactura>50</NoFactura>
@@ -62,11 +62,13 @@
 <Fecha>12-12-19</Fecha>
 </factura>
 
+
 <factura>
 <NoFactura>18</NoFactura>
 <Nit>123459</Nit>
 <Fecha>12-12-19</Fecha>
 </factura>
+
 
 <factura>
 <NoFactura>22</NoFactura>
@@ -74,29 +76,6 @@
 <Fecha>12-12-19</Fecha>
 </factura>
 
-<factura>
-<NoFactura>56</NoFactura>
-<Nit>123459</Nit>
-<Fecha>12-12-19</Fecha>
-</factura>
-
-<factura>
-<NoFactura>43</NoFactura>
-<Nit>123459</Nit>
-<Fecha>12-12-19</Fecha>
-</factura>
-
-<factura>
-<NoFactura>49</NoFactura>
-<Nit>123459</Nit>
-<Fecha>12-12-19</Fecha>
-</factura>
-
-<factura>
-<NoFactura>55</NoFactura>
-<Nit>123459</Nit>
-<Fecha>12-12-19</Fecha>
-</factura>
 
 <factura>
 <NoFactura>46</NoFactura>
@@ -104,17 +83,20 @@
 <Fecha>12-12-19</Fecha>
 </factura>
 
+
 <factura>
 <NoFactura>17</NoFactura>
 <Nit>123459</Nit>
 <Fecha>12-12-19</Fecha>
 </factura>
 
+
 <factura>
 <NoFactura>70</NoFactura>
 <Nit>123459</Nit>
 <Fecha>12-12-19</Fecha>
 </factura>
+
 
 <factura>
 <NoFactura>33</NoFactura>
@@ -128,27 +110,13 @@
 <Fecha>12-12-19</Fecha>
 </factura>
 
-<Estudiante>
-<Carnet>12345z</Carnet>
-<Nombre>BL0001</CodProducto>
-<Apellido>1.25</Valor>
-</Estudiante>
 
-<Estudiante>
-<Carnet>12345a</Carnet>
-<Nombre>BL0001</CodProducto>
-<Apellido>1.25</Valor>
-</Estudiante>
+<factura>
+<NoFactura>7</NoFactura>
+<Nit>123459</Nit>
+<Fecha>12-12-19</Fecha>
+</factura>
 
-<Estudiante>
-<Carnet>12345a</Carnet>
-<Nombre>BL0001</CodProducto>
-<Apellido>1.25</Valor>
-</Estudiante>
 
-<Estudiante>
-<Carnet>12345x</Carnet>
-<Nombre>BL0001</CodProducto>
-<Apellido>1.25</Valor>
-</Estudiante>
+
 

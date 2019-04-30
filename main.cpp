@@ -223,7 +223,7 @@ string buscarTipoDeClave(Nodo *tabla) {//Devuelve si la clave es int o char
 }
 
 long convertirACodigoComparable(string cadena, Nodo* tabla) {
-    if (buscarTipoDeClave(tabla).compare("char")==0) {
+    if (buscarTipoDeClave(tabla).compare("char") == 0) {
         long valor = 0;
         for (int i = 0; i < cadena.size(); i++) {
             long suma = cadena.at(i);
@@ -232,8 +232,8 @@ long convertirACodigoComparable(string cadena, Nodo* tabla) {
         }
         return valor;
     } else {
-            long b = atoi(cadena.c_str());
-            return b;
+        long b = atoi(cadena.c_str());
+        return b;
     }
 
 }
@@ -244,17 +244,18 @@ void anadirNodoHojaA_Arbol(NodoHoja* nuevoNodo, Pagina* paginaDondeSeColocaraElN
     NodoHoja* nodoActual = paginaDondeSeColocaraElNodoHoja->listaDeNodosHoja->nodoHoja;
     bool seCambio = false;
     //averiguar tipo
-    convertirACodigoComparable(nodoActual->clave, tablaParaElemento);
-    convertirACodigoComparable(nuevoNodo->clave, tablaParaElemento);
+    long val1 = convertirACodigoComparable(nodoActual->clave, tablaParaElemento);
+    long val2 = convertirACodigoComparable(nuevoNodo->clave, tablaParaElemento);
     while (nodoActual->nodoHojaSiguiente != NULL) {
-
-
-        if (nodoActual->clave == nuevoNodo->clave) {//Se compara si ya existe el elemento
+        val1 = convertirACodigoComparable(nodoActual->clave, tablaParaElemento);
+        val2 = convertirACodigoComparable(nuevoNodo->clave, tablaParaElemento);
+        if (val1 == val2) {//Se compara si ya existe el elemento
             cout << "No se puede INGRESAR VALOR CLAVE ES REPETIDO x1" << endl;
-            seCambio = true;
+            acciones += "No se puede INGRESAR VALOR CLAVE ES REPETIDO en fila:" + to_string(numeroDeInicioDeAccion) + "\n";
+            seCambio = true; //Ya qu existio error
             break;
         } else {
-            if (nodoActual->clave > nuevoNodo->clave) {//Cambio
+            if (val1 > val2) {//Cambio
                 nuevoNodo->nodoHojaSiguiente = nodoActual;
                 if (nodoAnterior == NULL) {
                     paginaDondeSeColocaraElNodoHoja->listaDeNodosHoja->nodoHoja = nuevoNodo;
@@ -273,10 +274,13 @@ void anadirNodoHojaA_Arbol(NodoHoja* nuevoNodo, Pagina* paginaDondeSeColocaraElN
 
     }
     if (!seCambio) {//Es ultimo o antepenultimo elemento de la lista
-        if (nodoActual->clave == nuevoNodo->clave) {//Se compara si ya existe el elemento
+        val1 = convertirACodigoComparable(nodoActual->clave, tablaParaElemento);
+        val2 = convertirACodigoComparable(nuevoNodo->clave, tablaParaElemento);
+        if (val1 == val2) {//Se compara si ya existe el elemento
             cout << "No se puede INGRESAR VALOR CLAVE ES REPETIDO x2" << endl;
+            acciones += "No se puede INGRESAR VALOR CLAVE ES REPETIDO en fila:" + to_string(numeroDeInicioDeAccion) + "\n";
         } else {
-            if (nodoActual->clave > nuevoNodo->clave) {//Ultimo nodo
+            if (val1 > val2) {//Ultimo nodo
                 nuevoNodo->nodoHojaSiguiente = nodoActual;
                 if (nodoAnterior == NULL) {
                     paginaDondeSeColocaraElNodoHoja->listaDeNodosHoja->nodoHoja = nuevoNodo;
@@ -598,6 +602,7 @@ void analizarEntrada() {
         while (!fichero.eof()) {
             if (letra == '\n') {//Se ha formado una linea
                 numeroDeFila++;
+                cout << "NUMERO DE FILA------------------------------->" << numeroDeFila << endl;
                 analisisDeLineaParaEntrada(cadenaFormada);
                 cadenaFormada = "";
             } else if (letra == '\t' || letra == '\r') {
@@ -709,7 +714,7 @@ void analisisDeLineaParaEntrada(string linea) {
                 cout << "TIPO:" << tipo << endl;
                 if (buscarAtributoEnTabla(tablaParaElemento, atributo, tipo)) {//Se busca si el atributo introducido es parte de la tabla
                     if (elementoDeTabla == NULL) {
-                        elementoDeTabla = crearElementoTabla(atributo, valorDeAtributo);
+                        elementoDeTabla = crearElementoTabla(atributo, valorDeAtributo); //Creamos el primer elemto tabla
                     } else {
                         ElementoDeTabla *nuevoElemento = crearElementoTabla(atributo, valorDeAtributo);
                         concatenarElementoDeTabla(nuevoElemento);
@@ -777,6 +782,7 @@ NodoInterno* buscarNodoInterno(Pagina* paginaDeNodo, int posicion) {
 }
 
 void insertarEnArbol(ElementoDeTabla *elementoDeTabla) {
+    acciones += "Se ha creado ele elemento de fila:" + to_string(numeroDeInicioDeAccion) + "\n";
     if (tablaParaElemento->arbol == NULL) {//No se cuente con arbol, por lo tanto es el primer dato
         tablaParaElemento->arbol = crearArbol(crearNodoHoja(elementoDeTabla, tablaParaElemento), NULL, NULL); //NULL1=nodoInterno, NULL2 padre
         imprimirElementosDeTbla(tablaParaElemento);
@@ -963,34 +969,41 @@ void restructurarArbol(Pagina *pagina, ElementoDeTabla *elemento) {
 
 Pagina *buscarPaginaDeInsercion(NodoInterno *partida, string claveBuscada) {
     Pagina* posiblePaginaHoja = NULL;
+    long val1 = convertirACodigoComparable(partida->clave, tablaParaElemento);
+    long val2 = convertirACodigoComparable(claveBuscada, tablaParaElemento);
     while (partida->nodoInternoSiguiente != NULL) {
-        if (partida->clave > claveBuscada) {
+        val1 = convertirACodigoComparable(partida->clave, tablaParaElemento);
+        val2 = convertirACodigoComparable(claveBuscada, tablaParaElemento);
+        if (val1 > val2) {
             posiblePaginaHoja = partida->hijoIzquierdo;
             if (posiblePaginaHoja->tipo.compare("hoja") == 0) {
                 return posiblePaginaHoja;
             } else {
-                buscarPaginaDeInsercion(posiblePaginaHoja->listaDeNodosInternos->nodoInterno, claveBuscada);
+                return buscarPaginaDeInsercion(posiblePaginaHoja->listaDeNodosInternos->nodoInterno, claveBuscada);
             }
-        } else if (partida->clave <= claveBuscada) {//Pasamos al siguiente elemento q  no sera nulo
+        } else if (val1 <= val2) {//Pasamos al siguiente elemento q  no sera nulo
             partida = partida->nodoInternoSiguiente;
         }
     }
     //Llegamos al final del arreglo, queda el ultimo elemento que apunta a null
-    if (partida->clave > claveBuscada) {
+     val1 = convertirACodigoComparable(partida->clave, tablaParaElemento);
+     val2 = convertirACodigoComparable(claveBuscada, tablaParaElemento);
+    if (val1 > val2) {
         posiblePaginaHoja = partida->hijoIzquierdo;
 
-    } else if (partida->clave <= claveBuscada) {//Pasamos al siguiente elemento q  no sera nulo
+    } else if (val1 <= val2) {//Pasamos al siguiente elemento q  no sera nulo
         posiblePaginaHoja = partida->hijoDerecho;
     }
     //Verifico si es hoja
     if (posiblePaginaHoja->tipo.compare("hoja") == 0) {
         return posiblePaginaHoja;
     } else {
-
-        buscarPaginaDeInsercion(posiblePaginaHoja->listaDeNodosInternos->nodoInterno, claveBuscada);
+        return buscarPaginaDeInsercion(posiblePaginaHoja->listaDeNodosInternos->nodoInterno, claveBuscada);
     }
 
 }
 
+void eliminarDatoDeArbol(Nodo* tabla, Pagina *pagina) {
 
+}
 
