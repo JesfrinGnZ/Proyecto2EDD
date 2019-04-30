@@ -1,0 +1,6 @@
+-----------------------estructura.xml--------------------------
+Tabla creada:factura fila:1
+Tabla creada:cliente fila:11
+Tabla creada:Estudiante fila:19
+-------------------------entrada.dat---------------------------
+
