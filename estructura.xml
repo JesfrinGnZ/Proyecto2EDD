@@ -1,6 +1,6 @@
 <estructura>
-<tabla>factura</tabla>
 <NoFactura>int</NoFactura>
+<tabla>factura</tabla>
 <Nit>int</Nit>
 <Fecha>char</Fecha>
 <Lugar>char</Lugar>
@@ -10,7 +10,7 @@
 
 <estructura>
 <tabla>cliente</tabla>
-<Nit>int</Nit>
+<Nit>int</Nit><factura>
 <Nombre>char</Nombre>
 <Apellido>char</Apellido>
 <clave>Nit</clave>

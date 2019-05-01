@@ -31,6 +31,12 @@ struct NodoHoja;
 struct ListaDeNodosHoja;
 struct Pagina;
 struct Arbol;
+struct ListaDeLlavesForaneas;
+struct LlaveForanea;
+struct NombreDeTabla;
+struct ListaDeNombreDeTabla;
+
+
 //Metodos
 void anadirAtributoA_Nodo(Atributo* atributo, Nodo* nodo);
 void anadirTablaA_Lista(Lista* lista, Nodo* nodo);
@@ -77,6 +83,7 @@ int numeroDeInicioDeAccion;
 Lista* listaDeTablas;
 //Variables para analisis de estructura, y formacion de estructuras
 bool laClaveExiste = false;
+bool existeErrorEnLlavesForaneas = false;
 Nodo* nodoActual;
 //Variables para analisis de entrada y asignacion de ElementosEstructura al arbol
 bool existeErrorAlCrearElementoDeTabla = false;
@@ -105,8 +112,78 @@ typedef struct Nodo {
     string tabla; //Nombre de tabla
     string clave; //Clave de tabla
     Arbol *arbol; //Arbol de tabla
+    ListaDeLlavesForaneas *llavesForaneas;
     struct Atributo *atributoPrimero;
 } Nodo;
+
+/*----------------------------------Elementos para claves foraneas---------------------------*/
+
+typedef struct ListaDeLlavesForaneas {
+    LlaveForanea *primerLlaveForanea;
+} ListaDeLlavesForaneas;
+
+typedef struct LlaveForanea {
+    Nodo * tabla;
+    string nombreDeAtributo;
+    LlaveForanea *llaveSiguiente;
+} LlaveForanea;
+
+ListaDeLlavesForaneas* crearListaDeLlavesForaneas() {
+    ListaDeLlavesForaneas *nuevaLista = new ListaDeLlavesForaneas;
+    nuevaLista->primerLlaveForanea = NULL;
+    return nuevaLista;
+}
+
+LlaveForanea* crearLlaveForanea(Nodo* tabla, string nombreDeAtributo) {
+    LlaveForanea *llave = new LlaveForanea;
+    llave->tabla = tabla;
+    llave->nombreDeAtributo = nombreDeAtributo;
+    return llave;
+}
+
+void anadirLlaveForanea(ListaDeLlavesForaneas *listaDeLlaves, LlaveForanea *nuevaLlave) {
+    if (listaDeLlaves->primerLlaveForanea == NULL) {
+        listaDeLlaves->primerLlaveForanea = nuevaLlave;
+    } else {
+        LlaveForanea *llave = listaDeLlaves->primerLlaveForanea;
+        while (llave->llaveSiguiente != NULL) {
+            llave = llave->llaveSiguiente;
+        }
+        llave->llaveSiguiente = nuevaLlave;
+    }
+}
+
+/*----------------------------------------Elementos para nombres de tablas---------------------*/
+
+typedef struct NombreDeTabla {
+    string nombreTabla;
+    NombreDeTabla *siguiente;
+} NombreDeTabla;
+
+typedef struct ListaDeNombreDeTabla {
+    NombreDeTabla * primerNombre;
+} ListaDeNombreDeTabla;
+
+ListaDeNombreDeTabla* crearListaDeNombresDeTabla(NombreDeTabla *nombre) {
+    ListaDeNombreDeTabla *lista = new ListaDeNombreDeTabla;
+    lista->primerNombre = nombre;
+    return lista;
+}
+
+NombreDeTabla* crearNombreDeTabla(string nombreDeTabla) {
+    NombreDeTabla *nombre = new NombreDeTabla;
+    nombre->nombreTabla = nombreDeTabla;
+    nombre->siguiente = NULL;
+    return nombre;
+}
+
+void anadirNombreDeTabla(ListaDeNombreDeTabla *lista, NombreDeTabla *nombre) {
+    NombreDeTabla *nombreActual = lista->primerNombre;
+    while (nombreActual->siguiente != NULL) {
+        nombreActual = nombreActual->siguiente;
+    }
+    nombreActual->siguiente = nombre;
+}
 
 /*------------------------Estructuras para trabajo con arboles b+---------------------------*/
 
@@ -346,6 +423,9 @@ Nodo* crearNodo() {
     nodo->siguiente = NULL;
     nodo->atributoPrimero = NULL;
     nodo->arbol = NULL;
+    //nodo->tabla=NULL;
+    //nodo->clave=NULL;
+    nodo->llavesForaneas = NULL;
     return nodo;
 }
 
@@ -439,8 +519,20 @@ string buscarLlavePrimaria(string clave, ElementoDeTabla *elemento) {
 }
 
 bool buscarAtributoEnTabla(Nodo* tabla, string atributoTexto, string tipo) {//Busca que exista el atributo en la tabla especifica y que coincida con el tipo para crear el atributo
-    Atributo* atributo = tabla->atributoPrimero;
-    while (atributo->atributoSiguiente != NULL) {
+    if (tabla == NULL) {
+        return false;
+    } else {
+        Atributo* atributo = tabla->atributoPrimero;
+        while (atributo->atributoSiguiente != NULL) {
+            if (atributo->id.compare(atributoTexto) == 0) {
+                if (atributo->tipo.compare("char") == 0) {
+                    return true;
+                } else if (atributo->tipo.compare(tipo) == 0) {
+                    return true;
+                }
+            }
+            atributo = atributo->atributoSiguiente;
+        }
         if (atributo->id.compare(atributoTexto) == 0) {
             if (atributo->tipo.compare("char") == 0) {
                 return true;
@@ -448,17 +540,8 @@ bool buscarAtributoEnTabla(Nodo* tabla, string atributoTexto, string tipo) {//Bu
                 return true;
             }
         }
-        atributo = atributo->atributoSiguiente;
+        return false;
     }
-    if (atributo->id.compare(atributoTexto) == 0) {
-        if (atributo->tipo.compare("char") == 0) {
-            return true;
-        } else if (atributo->tipo.compare(tipo) == 0) {
-            return true;
-        }
-    }
-    return false;
-
 }
 
 //-----------------------------------------------------------ESTRUCTURA.XML-----------------------------------------
@@ -501,9 +584,10 @@ void analisisDeLineaParaEstructura(string linea) {
     } else if (linea.compare("</estructura>") == 0) {
         //No existen errores si llego hasta aca
         //Se anade el nodo a lista
-        if (laClaveExiste) {
+        if (laClaveExiste && !existeErrorEnLlavesForaneas) {
             cout << "Fin de estructura" << endl;
             laClaveExiste = false;
+            existeErrorEnLlavesForaneas = false;
             if (buscarTabla(nodoActual->tabla) == NULL) {
                 acciones += "Tabla creada:" + nodoActual->tabla + " fila:" + to_string(numeroDeInicioDeAccion) + "\n";
                 anadirTablaA_Lista(listaDeTablas, nodoActual);
@@ -512,6 +596,8 @@ void analisisDeLineaParaEstructura(string linea) {
             }
 
         } else {//Error ya que la clave no se creo
+            laClaveExiste = false;
+            existeErrorEnLlavesForaneas = false;
             acciones += "ERROR Tabla NO creada:" + nodoActual->tabla + " fila:" + to_string(numeroDeInicioDeAccion) + "\n";
         }
     } else if (linea.compare("") == 0) {
@@ -524,22 +610,34 @@ void analisisDeLineaParaEstructura(string linea) {
 
 void analisisDeAtributo(string linea) {
     //estructura = <id1>tipo</id2>
+    ListaDeNombreDeTabla *listaDeNombresDeTabla = NULL;
     string estructuraFormada = "";
-    string estructuraA_Comparar = "";
     string id1 = "";
-    string id2 = "";
+    //string id2 = "";
     string tipo = "";
+    //Para llaves foraneas
+    int contadorDeSignosMenores = 0;
+    string nombreDeTablasParaLlavesForaneas; //Para crearlas se debe verificar que la tablas existan
     bool esTipo = false;
     bool esSegundoId = false;
     for (int i = 0; i < linea.size(); i++) {
         char caracter = linea.at(i);
         switch (caracter) {
             case '<':
+                contadorDeSignosMenores++;
                 estructuraFormada += caracter;
                 break;
             case '>':
                 estructuraFormada += caracter;
                 esTipo = true;
+                if (contadorDeSignosMenores >= 3) {
+                    if (contadorDeSignosMenores == 3) {
+                        listaDeNombresDeTabla = crearListaDeNombresDeTabla(crearNombreDeTabla(nombreDeTablasParaLlavesForaneas));
+                    } else {
+                        anadirNombreDeTabla(listaDeNombresDeTabla, crearNombreDeTabla(nombreDeTablasParaLlavesForaneas));
+                    }
+                    nombreDeTablasParaLlavesForaneas = "";
+                }
                 break;
             case '/':
                 estructuraFormada += caracter;
@@ -548,42 +646,74 @@ void analisisDeAtributo(string linea) {
                 break;
             default://Es una letra
                 estructuraFormada += caracter;
-                if (esTipo) {
+                if (contadorDeSignosMenores >= 3) {
+                    nombreDeTablasParaLlavesForaneas += caracter;
+                } else if (esTipo) {
                     tipo += caracter;
                 } else if (esSegundoId) {
-                    id2 += caracter;
-                } else {
                     id1 += caracter;
                 }
                 break;
+        }
+    }
+    //Verificar que esas tablas existan y el atributo mencionado exista en la tabla
 
-        }
-    }
-    estructuraA_Comparar = "<" + id1 + ">" + tipo + "</" + id2 + ">";
-    if (estructuraFormada.compare(estructuraA_Comparar) == 0) {//La linea de atributos cuenta con los signos correctos
-        if (id1.compare(id2) == 0) {//Las etiquetas son las mismas
-            if (id1.compare("tabla") == 0) {//Es tabla,solo se le actualiza la tabla al nodo actual
-                cout << "ES TABLA" << endl;
-                nodoActual->tabla = tipo;
-            } else if (id1.compare("clave") == 0) {//Es clave
-                cout << "ES CLAVE" << endl;
-                //Buscar si se ha definido anteriormente la clave
-                //Buscar un atributo en el nodo tal que su id coincida con tipo de clave
-                if (buscarAtributo(tipo)) {
-                    nodoActual->clave = tipo; //Se le asigna la clave a la tabla
-                    laClaveExiste = true;
+    //For para esto y una variable de error 
+
+    bool seEncontro = false;
+    if (listaDeNombresDeTabla != NULL) {//Verificando que las tablas existan para las llaves foraneas
+        NombreDeTabla *nombre = listaDeNombresDeTabla->primerNombre;
+        if (nombre != NULL) {
+            while (nombre->siguiente != NULL) {
+                if (!buscarAtributoEnTabla(buscarTabla(nombre->nombreTabla), id1, tipo)) {
+                    existeErrorEnLlavesForaneas = true;
+                    seEncontro=true;
+                    break;
                 }
-            } else {//Es un atributo cualquiera
-                cout << "ES ATRIBUTO" << endl;
-                Atributo *nuevoAtributo = crearAtributo(tipo, id1);
-                anadirAtributoA_Nodo(crearAtributo(tipo, id1), nodoActual);
+                nombre = nombre->siguiente;
             }
-        } else {
-            // cout << "Las etiquetas no son iguales" << id1 << " " << id2 << endl;
+            if (!seEncontro) {
+                if (!buscarAtributoEnTabla(buscarTabla(nombre->nombreTabla), id1, tipo)) {
+                    existeErrorEnLlavesForaneas = true;
+                }
+            }
         }
-    } else {
-        //cout << "Las estructuras esta mal formada, o simplemenre contiene espacios:" << estructuraFormada << " " << estructuraA_Comparar << endl;
+        //Si no ha existido error en las llaves foraneas las llena
+        Nodo* nodoAc=nodoActual;
+        if (!existeErrorEnLlavesForaneas) {
+            if (nodoActual->llavesForaneas == NULL) {
+                nodoActual->llavesForaneas = crearListaDeLlavesForaneas();
+            }
+            NombreDeTabla *nombre2 = listaDeNombresDeTabla->primerNombre;
+            while (nombre2->siguiente != NULL) {
+                anadirLlaveForanea(nodoActual->llavesForaneas, crearLlaveForanea(buscarTabla(nombre2->nombreTabla), id1));
+                nombre2 = nombre2->siguiente;
+            }
+            anadirLlaveForanea(nodoActual->llavesForaneas, crearLlaveForanea(buscarTabla(nombre2->nombreTabla), id1));
+        }
     }
+
+
+
+
+
+    if (id1.compare("tabla") == 0) {//Es tabla,solo se le actualiza la tabla al nodo actual
+        cout << "ES TABLA" << endl;
+        nodoActual->tabla = tipo;
+    } else if (id1.compare("clave") == 0) {//Es clave
+        cout << "ES CLAVE" << endl;
+        //Buscar si se ha definido anteriormente la clave
+        //Buscar un atributo en el nodo tal que su id coincida con tipo de clave
+        if (buscarAtributo(tipo)) {
+            nodoActual->clave = tipo; //Se le asigna la clave a la tabla
+            laClaveExiste = true;
+        }
+    } else {//Es un atributo cualquiera
+        cout << "ES ATRIBUTO" << endl;
+        Atributo *nuevoAtributo = crearAtributo(tipo, id1);
+        anadirAtributoA_Nodo(crearAtributo(tipo, id1), nodoActual);
+    }
+
 
 }
 
@@ -986,8 +1116,8 @@ Pagina *buscarPaginaDeInsercion(NodoInterno *partida, string claveBuscada) {
         }
     }
     //Llegamos al final del arreglo, queda el ultimo elemento que apunta a null
-     val1 = convertirACodigoComparable(partida->clave, tablaParaElemento);
-     val2 = convertirACodigoComparable(claveBuscada, tablaParaElemento);
+    val1 = convertirACodigoComparable(partida->clave, tablaParaElemento);
+    val2 = convertirACodigoComparable(claveBuscada, tablaParaElemento);
     if (val1 > val2) {
         posiblePaginaHoja = partida->hijoIzquierdo;
 
