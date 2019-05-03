@@ -2,10 +2,20 @@
 Tabla creada:factura fila:1
 -------------------------entrada.dat---------------------------
 Se ha creado ele elemento de fila:2
-Se ha creado ele elemento de fila:8
-Se ha creado ele elemento de fila:14
-Se ha creado ele elemento de fila:21
-Se ha creado ele elemento de fila:28
-Se ha creado ele elemento de fila:35
-Se ha creado ele elemento de fila:42
+Se ha creado ele elemento de fila:9
+Se ha creado ele elemento de fila:16
+Se ha creado ele elemento de fila:22
+Se ha creado ele elemento de fila:29
+Se ha creado ele elemento de fila:36
+Se ha creado ele elemento de fila:43
+Se ha creado ele elemento de fila:50
+Se ha creado ele elemento de fila:57
+Se ha creado ele elemento de fila:64
+Se ha creado ele elemento de fila:71
+Se ha creado ele elemento de fila:79
+Se ha creado ele elemento de fila:87
+Se ha creado ele elemento de fila:94
+Se ha creado ele elemento de fila:102
+Se ha creado ele elemento de fila:109
+Se ha creado ele elemento de fila:116
 

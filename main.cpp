@@ -227,6 +227,7 @@ typedef struct Pagina {
     ListaDeNodosHoja* listaDeNodosHoja;
     Pagina *padre;
     Pagina *paginaSiguiente; //Pagina que servira commo apuntador en las paginas hojas
+    Pagina *paginaAnterior;
 } Pagina;
 
 typedef struct Arbol {
@@ -398,6 +399,7 @@ Pagina* crearPagina(NodoHoja *nodoHoja, NodoInterno *nodoInterno, Pagina *padre)
     }
     pagina->padre = padre;
     pagina->paginaSiguiente = NULL;
+    pagina->paginaAnterior =NULL;
 
 }
 
@@ -1155,6 +1157,7 @@ void insertarEnArbol(ElementoDeTabla *elementoDeTabla) {
                 anadirNodoHojaA_Arbol(nodo5, paginaDerecha);
                 //Se anade la pagina Siguiente
                 paginaIzquierda->paginaSiguiente = paginaDerecha;
+                paginaDerecha->paginaAnterior=paginaIzquierda;
                 //Tomar el tercer elemento de la pagina y con la clave de este crear un nodo pagina anadiendo sus hijos Izquierdo y derecho
                 NodoInterno* nodoInternoRaiz = crearNodoInterno(paginaIzquierda, paginaDerecha, nodo3->clave);
                 Pagina *nuevaPaginaRaiz = crearPagina(NULL, nodoInternoRaiz, NULL);
@@ -1258,7 +1261,15 @@ void restructurarArbol(Pagina *pagina, ElementoDeTabla *elemento) {
             paginaIzquierda->paginaSiguiente = paginaDerecha;
             //Pagina derecha debe apuntar a la anterior pagina siguiente
             paginaDerecha->paginaSiguiente = pagina->paginaSiguiente;
+            paginaDerecha->paginaAnterior=paginaIzquierda;
             //Se anade al padre
+            if(pagina->paginaAnterior!=NULL){//Tenia pagina anterior
+                pagina->paginaAnterior->paginaSiguiente=paginaIzquierda;
+                paginaIzquierda->paginaAnterior=pagina->paginaAnterior;
+            }
+            if(pagina->paginaSiguiente!=NULL){
+                pagina->paginaSiguiente->paginaAnterior=paginaDerecha;
+            }
 
 
 
