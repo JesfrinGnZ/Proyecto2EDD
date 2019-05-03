@@ -1,25 +1,11 @@
 -----------------------estructura.xml--------------------------
 Tabla creada:factura fila:1
-Tabla creada:cliente fila:11
-Tabla creada:Estudiante fila:19
 -------------------------entrada.dat---------------------------
-Se ha creado ele elemento de fila:1
-Se ha creado ele elemento de fila:7
-Se ha creado ele elemento de fila:13
-Se ha creado ele elemento de fila:19
-Se ha creado ele elemento de fila:25
-Se ha creado ele elemento de fila:32
-Se ha creado ele elemento de fila:38
-Se ha creado ele elemento de fila:45
-Se ha creado ele elemento de fila:52
-Se ha creado ele elemento de fila:59
-Se ha creado ele elemento de fila:66
-Se ha creado ele elemento de fila:73
-Se ha creado ele elemento de fila:80
-Se ha creado ele elemento de fila:87
-Se ha creado ele elemento de fila:94
-Se ha creado ele elemento de fila:101
-Se ha creado ele elemento de fila:107
-Se ha creado ele elemento de fila:114
-No se puede INGRESAR VALOR CLAVE ES REPETIDO en fila:114
+Se ha creado ele elemento de fila:2
+Se ha creado ele elemento de fila:8
+Se ha creado ele elemento de fila:14
+Se ha creado ele elemento de fila:21
+Se ha creado ele elemento de fila:28
+Se ha creado ele elemento de fila:35
+Se ha creado ele elemento de fila:42
 

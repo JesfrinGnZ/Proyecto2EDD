@@ -1,0 +1,3 @@
+<reporte>
+<producto>Valor</producto>
+</reporte>

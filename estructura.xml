@@ -3,23 +3,6 @@
 <tabla>factura</tabla>
 <Nit>int</Nit>
 <Fecha>char</Fecha>
-<Lugar>char</Lugar>
-<Valor>int</Valor>
 <clave>NoFactura</clave>
 </estructura>
 
-<estructura>
-<tabla>cliente</tabla>
-<Nit>int</Nit><factura>
-<Nombre>char</Nombre>
-<Apellido>char</Apellido>
-<clave>Nit</clave>
-</estructura>
-
-<estructura>
-<tabla>Estudiante</tabla>
-<Carnet>char</Carnet>
-<Nombre>char</Nombre>
-<Apellido>char</Apellido>
-<clave>Carnet</clave>
-</estructura>

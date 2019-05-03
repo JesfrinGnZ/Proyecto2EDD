@@ -1,121 +1,51 @@
+
 <factura>
-<NoFactura>7</NoFactura>
+<NoFactura>50</NoFactura>
 <Nit>123456</Nit>
 <Fecha>12-12-19</Fecha>
 </factura>
 
 <factura>
-<NoFactura>25</NoFactura>
+<NoFactura>49</NoFactura>
 <Nit>123456</Nit>
 <Fecha>12-12-19</Fecha>
 </factura>
 
 <factura>
-<NoFactura>27</NoFactura>
+<NoFactura>48</NoFactura>
 <Nit>123454</Nit>
 <Fecha>12-12-19</Fecha>
 </factura>
 
-<factura>
-<NoFactura>15</NoFactura>
-<Nit>123459</Nit>
-<Fecha>12-12-19</Fecha>
-</factura>
 
 <factura>
-<NoFactura>23</NoFactura>
-<Nit>123459</Nit>
+<NoFactura>200</NoFactura>
+<Nit>123456</Nit>
 <Fecha>12-12-19</Fecha>
 </factura>
 
 
 <factura>
-<NoFactura>19</NoFactura>
-<Nit>123459</Nit>
-<Fecha>12-12-19</Fecha>
-</factura>
-
-<factura>
-<NoFactura>14</NoFactura>
-<Nit>123459</Nit>
+<NoFactura>60</NoFactura>
+<Nit>123456</Nit>
 <Fecha>12-12-19</Fecha>
 </factura>
 
 
 <factura>
-<NoFactura>29</NoFactura>
-<Nit>123459</Nit>
+<NoFactura>51</NoFactura>
+<Nit>123456</Nit>
 <Fecha>12-12-19</Fecha>
 </factura>
 
 
 <factura>
-<NoFactura>10</NoFactura>
-<Nit>123459</Nit>
+<NoFactura>300</NoFactura>
+<Nit>123456</Nit>
 <Fecha>12-12-19</Fecha>
 </factura>
 
 
-<factura>
-<NoFactura>50</NoFactura>
-<Nit>123459</Nit>
-<Fecha>12-12-19</Fecha>
-</factura>
-
-
-<factura>
-<NoFactura>18</NoFactura>
-<Nit>123459</Nit>
-<Fecha>12-12-19</Fecha>
-</factura>
-
-
-<factura>
-<NoFactura>22</NoFactura>
-<Nit>123459</Nit>
-<Fecha>12-12-19</Fecha>
-</factura>
-
-
-<factura>
-<NoFactura>46</NoFactura>
-<Nit>123459</Nit>
-<Fecha>12-12-19</Fecha>
-</factura>
-
-
-<factura>
-<NoFactura>17</NoFactura>
-<Nit>123459</Nit>
-<Fecha>12-12-19</Fecha>
-</factura>
-
-
-<factura>
-<NoFactura>70</NoFactura>
-<Nit>123459</Nit>
-<Fecha>12-12-19</Fecha>
-</factura>
-
-
-<factura>
-<NoFactura>33</NoFactura>
-<Nit>123459</Nit>
-<Fecha>12-12-19</Fecha>
-</factura>
-
-<factura>
-<NoFactura>58</NoFactura>
-<Nit>123459</Nit>
-<Fecha>12-12-19</Fecha>
-</factura>
-
-
-<factura>
-<NoFactura>7</NoFactura>
-<Nit>123459</Nit>
-<Fecha>12-12-19</Fecha>
-</factura>
 
 
 
