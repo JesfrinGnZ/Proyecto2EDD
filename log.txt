@@ -1,21 +1,27 @@
 -----------------------estructura.xml--------------------------
 Tabla creada:factura fila:1
+Tabla creada:cliente fila:10
 -------------------------entrada.dat---------------------------
-Se ha creado ele elemento de fila:2
-Se ha creado ele elemento de fila:9
-Se ha creado ele elemento de fila:16
-Se ha creado ele elemento de fila:22
-Se ha creado ele elemento de fila:29
-Se ha creado ele elemento de fila:36
-Se ha creado ele elemento de fila:43
-Se ha creado ele elemento de fila:50
-Se ha creado ele elemento de fila:57
-Se ha creado ele elemento de fila:64
-Se ha creado ele elemento de fila:71
-Se ha creado ele elemento de fila:79
+Se ha creado ele elemento de fila:4
+Se ha creado ele elemento de fila:10
+Se ha creado ele elemento de fila:18
+Se ha creado ele elemento de fila:25
+Se ha creado ele elemento de fila:32
+Se ha creado ele elemento de fila:38
+Se ha creado ele elemento de fila:45
+Se ha creado ele elemento de fila:52
+Se ha creado ele elemento de fila:59
+Se ha creado ele elemento de fila:66
+Se ha creado ele elemento de fila:73
+Se ha creado ele elemento de fila:80
 Se ha creado ele elemento de fila:87
-Se ha creado ele elemento de fila:94
-Se ha creado ele elemento de fila:102
-Se ha creado ele elemento de fila:109
-Se ha creado ele elemento de fila:116
+Se ha creado ele elemento de fila:95
+Se ha creado ele elemento de fila:103
+Se ha creado ele elemento de fila:110
+Se ha creado ele elemento de fila:118
+Se ha creado ele elemento de fila:125
+Se ha creado ele elemento de fila:132
+-------------------------reportes.txt---------------------------
+Tabla creada para reporte en fila:1
+Tabla creada para reporte en fila:5
 

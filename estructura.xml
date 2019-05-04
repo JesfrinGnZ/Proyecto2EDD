@@ -6,3 +6,10 @@
 <clave>NoFactura</clave>
 </estructura>
 
+
+<estructura>
+<tabla>cliente</tabla>
+<dpi>int</dpi>
+<Nit>int</Nit>
+<clave>dpi</clave>
+</estructura>

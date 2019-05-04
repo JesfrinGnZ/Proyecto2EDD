@@ -1,3 +1,7 @@
 <reporte>
-<producto>Valor</producto>
+<factura>NoFactura</factura>
+</reporte>
+
+<reporte>
+<cliente>dpi</cliente>
 </reporte>

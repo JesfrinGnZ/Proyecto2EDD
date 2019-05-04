@@ -80,6 +80,8 @@ Pagina *buscarPaginaDeInsercion(NodoInterno *partida, string claveBuscada);
 void restructurarArbol(Pagina *pagina, ElementoDeTabla *elemento);
 void anadirNodoInterno(Pagina* pagina, NodoInterno* nuevoNodo);
 
+string pasrDatosHtml(Pagina* primerPagina);
+
 
 //Variable que guarda los mensajes de acciones y numero de fila
 string acciones = "";
@@ -95,6 +97,11 @@ Nodo* nodoActual;
 bool existeErrorAlCrearElementoDeTabla = false;
 ElementoDeTabla *elementoDeTabla = NULL;
 Nodo* tablaParaElemento = NULL;
+//Variables para reportes
+//string encabezadoDeReporte = "<!DOCTYPE HTML5>\n<html>\n\t<head>\n\t\t<title>REPORTE</title>\n\t\t<meta charset=\"utf-8\">\n\t</head>\n\t<body>\n\t\t<table border="1">\n";
+string encabezadoDeReporte = "<!DOCTYPE HTML5>\n<html>\n\t<head>\n\t\t<title>REPORTE</title>\n\t\t<meta charset=\"utf-8\">\n\t</head>\n\t<body>\n";
+string finDeReporte = "\t</body>\n</html>\n";
+int numeroDeReporteGenerado = 0;
 //main
 
 int main(int argc, char** argv) {
@@ -108,10 +115,13 @@ int main(int argc, char** argv) {
     numeroDeFila = 0;
     acciones += "-------------------------entrada.dat---------------------------\n";
     analizarEntrada();
-    escribirEnArchivo("log.txt", acciones);
     numeroDeFila = 0;
     acciones += "-------------------------reportes.txt---------------------------\n";
     analizarReportes();
+    escribirEnArchivo("log.txt", acciones);
+    encabezadoDeReporte+=finDeReporte;
+     escribirEnArchivo("Resultados", encabezadoDeReporte);
+    cout<<encabezadoDeReporte;
     return 0;
 }
 
@@ -277,6 +287,55 @@ ListaDeNodosHoja* crearListaDeNodosHoja(NodoHoja* nodoHoja) {
     return lista;
 }
 
+void anadirNodoHojaALista(ListaDeNodosHoja *lista, NodoHoja* nuevoNodo) {
+    NodoHoja *nodo = lista->nodoHoja;
+    while (nodo->nodoHojaSiguiente != NULL) {
+        nodo = nodo->nodoHojaSiguiente;
+    }
+    nodo->nodoHojaSiguiente = nuevoNodo;
+    /*NodoHoja *nodoAnterior = NULL;
+    NodoHoja *nodoActual = lista->nodoHoja;
+    bool seCambio = false;
+    buscarAtributo();
+    long val1 = convertirACodigoComparable(nodoActual->clave, tablaParaElemento);
+    long val2 = convertirACodigoComparable(nuevoNodo->clave, tablaParaElemento);
+    while (nodoActual->nodoHojaSiguiente != NULL) {
+        val1 = convertirACodigoComparable(nodoActual->clave, tablaParaElemento);
+        val2 = convertirACodigoComparable(nuevoNodo->clave, tablaParaElemento);
+        if (val1 > val2) {//Cambio
+            nuevoNodo->nodoHojaSiguiente = nodoActual;
+            if (nodoAnterior == NULL) {
+                lista->nodoHoja = nuevoNodo;
+            } else {
+                nodoAnterior->nodoHojaSiguiente = nuevoNodo;
+            }
+            //Valor ingresado correctamente
+            seCambio = true;
+            break;
+        } else {
+            nodoAnterior = nodoActual;
+            nodoActual = nodoActual->nodoHojaSiguiente;
+        }
+    }
+
+    if (!seCambio) {//Es ultimo o antepenultimo elemento de la lista
+        val1 = convertirACodigoComparable(nodoActual->clave, tablaParaElemento);
+        val2 = convertirACodigoComparable(nuevoNodo->clave, tablaParaElemento);
+        if (val1 > val2) {//Ultimo nodo
+            nuevoNodo->nodoHojaSiguiente = nodoActual;
+            if (nodoAnterior == NULL) {
+                lista->nodoHoja = nuevoNodo;
+            } else {
+                nodoAnterior->nodoHojaSiguiente = nuevoNodo;
+            }
+        } else {
+            nodoActual->nodoHojaSiguiente = nuevoNodo;
+        }
+        //Valor ingresado correctamente
+    }*/
+
+}
+
 NodoHoja* crearNodoHoja(ElementoDeTabla* elemento, Nodo* tablaActual) {
     NodoHoja *nodo = new NodoHoja;
     nodo->elementoDeTabla = elemento;
@@ -399,7 +458,7 @@ Pagina* crearPagina(NodoHoja *nodoHoja, NodoInterno *nodoInterno, Pagina *padre)
     }
     pagina->padre = padre;
     pagina->paginaSiguiente = NULL;
-    pagina->paginaAnterior =NULL;
+    pagina->paginaAnterior = NULL;
 
 }
 
@@ -932,7 +991,7 @@ void analizarReportes() {
 void analisisDeLineaParaReporte(string cadenaFormada) {
     if (cadenaFormada.compare("<reporte>") == 0) {//Es inicio de reporte
         cout << "********************--------------------*********************-----Reportes****************************-------------------------" << endl;
-
+        numeroDeInicioDeAccion=numeroDeFila;
     } else if (cadenaFormada.compare("</reporte>") == 0) {//Es fin de reporte
 
     } else if (cadenaFormada.compare("") == 0) {//Linea vacia por lo tanto no se realizan acciones 
@@ -1000,18 +1059,231 @@ void analisisDeReporte(string linea) {
     cout << "ATRIBUTO:" << nombreDeAtributo << endl;
 
     mostrarDatosDePagina(buscarPaginaMasALaIzquierda(listaDeTablas->PrimerNodo->arbol->paginaRaiz));
+    
+        cout << "********************--------------------*********************-----FIN****************************-------------------------" << endl;
 
+    string restoDeReporte = "";
     if (atributo != NULL && nmTabla != NULL) {//Existe la tabla y el atributo
         //Obtener todos los elementos de la tabla
         //Ordenarlos segun el atributo que nos indica el reporte
+        restoDeReporte = "\t\t<table border=\"1\">\n\t\t<tr>\n";
         Pagina *primerPagina = buscarPaginaMasALaIzquierda(tabla->arbol->paginaRaiz);
+        //Comenzamos con el encabezado de la tabla
+        Atributo *atributo = tabla->atributoPrimero;
+        while (atributo->atributoSiguiente != NULL) {
+            restoDeReporte += "\t\t\t<th>" + atributo->id + "</th>\n";
+            atributo = atributo->atributoSiguiente;
+        }
+        restoDeReporte += "\t\t\t<th>" + atributo->id + "</th>\n";
+        restoDeReporte += "\t\t</tr>\n";
+        //Una vez terminado el encabezado comenzamos con la lista, se debe ordenar primero segun el atributo que mencionan
+////////        ListaDeNodosHoja *nuevaLista = NULL;
+////////        //NodoHoja *nodo = primerPagina->listaDeNodosHoja->nodoHoja;
+////////        while (primerPagina->paginaSiguiente != NULL) {
+////////            NodoHoja *nodo = primerPagina->listaDeNodosHoja->nodoHoja;
+////////            while (nodo != NULL) {
+////////                ElementoDeTabla *elemento = nodo->elementoDeTabla;
+////////                restoDeReporte += "\t\t<tr>\n";
+////////                while (elemento != NULL) {
+////////                    if (elemento->valorSiguiente != NULL) {
+////////                        restoDeReporte += "\t\t\t<td>" + elemento->valorDeAtributo + "</td>\n";
+////////                        elemento = elemento->valorSiguiente;
+////////                    } else {
+////////                        elemento = NULL;
+////////                    }
+////////                }
+////////                restoDeReporte += "\t\t</tr>\n";
+////////                if (nodo->nodoHojaSiguiente != NULL) {
+////////                    nodo = nodo->nodoHojaSiguiente;
+////////                } else {
+////////                    nodo = NULL;
+////////                }
+////////            }
+////////            //problemas
+////////            /*if (primerPagina->paginaSiguiente == NULL) {
+////////                cout<<"ES NULO"<<endl;
+////////                primerPagina == NULL;
+////////            } else {
+////////                cout<<"NO ES NULO"<<endl;
+////////                primerPagina = primerPagina->paginaSiguiente;
+////////            }*/
+////////        }
+        
+        
+//        NodoHoja *nodo = primerPagina->listaDeNodosHoja->nodoHoja;
+//            while (nodo != NULL) {
+//                ElementoDeTabla *elemento = nodo->elementoDeTabla;
+//                restoDeReporte += "\t\t<tr>\n";
+//                while (elemento != NULL) {
+//                    if (elemento->valorSiguiente != NULL) {
+//                        restoDeReporte += "\t\t\t<th>" + elemento->valorDeAtributo + "</th>\n";
+//                        elemento = elemento->valorSiguiente;
+//                    } else {
+//                        elemento = NULL;
+//                    }
+//                }
+//                restoDeReporte += "\t\t</tr>\n";
+//                if (nodo->nodoHojaSiguiente != NULL) {
+//                    nodo = nodo->nodoHojaSiguiente;
+//                } else {
+//                    nodo = NULL;
+//                }
+//            }
+        
+        restoDeReporte+=pasrDatosHtml(primerPagina);
+        //Se termina tabla    
+        restoDeReporte += "\t\t</table>\n";
+        encabezadoDeReporte += restoDeReporte;
+        acciones+="Tabla creada para reporte en fila:"+ to_string(numeroDeInicioDeAccion) +"\n";
+        /*
+        
+        //Se anaden todos los nodos a una lista
+        while (primerPagina != NULL) {
+            NodoHoja *nodo = primerPagina->listaDeNodosHoja->nodoHoja;
+            while (nodo != NULL) {
+                if (nuevaLista == NULL) {
+                    nuevaLista = crearListaDeNodosHoja(crearNodoHoja(crearElementoTabla(nodo->elementoDeTabla->atributo, nodo->elementoDeTabla->valorDeAtributo), tabla));
+                } else {
+                    anadirNodoHojaALista(nuevaLista, crearNodoHoja(crearElementoTabla(nodo->elementoDeTabla->atributo, nodo->elementoDeTabla->valorDeAtributo), tabla));
+                }
+                if (nodo->nodoHojaSiguiente != NULL) {
+                    nodo = nodo->nodoHojaSiguiente;
+                } else {
+                    nodo = NULL;
+                }
+            }
+            if (primerPagina->paginaSiguiente != NULL) {
+                primerPagina = primerPagina->paginaSiguiente;
+            } else {
+                primerPagina = NULL;
+            }
+        }
+        //Ahora se toma cada elemento para pasarlo a html
+        NodoHoja *nodoDeLista = nuevaLista->nodoHoja;
+        while (nodoDeLista != NULL) {
+            ElementoDeTabla *elemento = nodoDeLista->elementoDeTabla;
+            restoDeReporte += "\t\t\t<tr>";
+            while (elemento != NULL) {
+                restoDeReporte += "\t\t\t\t<th>" + elemento->valorDeAtributo + "</th>";
+                if (elemento->valorSiguiente != NULL) {
+                    elemento = elemento->valorSiguiente;
+                } else {
+                    elemento = NULL;
+                }
+            }
+            restoDeReporte += "\t\t\t<tr>";
+
+            if (nodoDeLista->nodoHojaSiguiente != NULL) {
+                nodoDeLista = nodoDeLista->nodoHojaSiguiente;
+            } else {
+                nodoDeLista == NULL;
+            }
+        }
+
+        /* while (nodo->nodoHojaSiguiente != NULL) {
+             if (nuevaLista == NULL) {
+                 nuevaLista = crearListaDeNodosHoja(nodo);
+             } else {
+                 anadirNodoHojaALista(nuevaLista, nodo, Nodo tabla, atributo);
+             }
+             nodo = nodo->nodoHojaSiguiente;
+         }*/
+
 
     } else {
         //Indicar que no es posible crear el reporte
+        acciones+="No es posible crear el reporte en fila:"+ to_string(numeroDeInicioDeAccion) +"\n";
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+string pasrDatosHtml(Pagina* primerPagina) {
+    string restoDeReporte="";
+    while (primerPagina->paginaSiguiente != NULL) {
+        NodoHoja *nodoHoja = primerPagina->listaDeNodosHoja->nodoHoja;
+        while (nodoHoja->nodoHojaSiguiente != NULL) {
+            ElementoDeTabla *elemento = nodoHoja->elementoDeTabla;
+            cout << "Nuevo ELEMENETO DE TABLA" << endl;
+            restoDeReporte += "\t\t<tr>\n";
+            while (elemento != NULL) {
+                cout << "Atributo:" << elemento->atributo << endl;
+                cout << "ValorDeAtributo:" << elemento->valorDeAtributo << endl;
+                restoDeReporte += "\t\t\t<td>" + elemento->valorDeAtributo + "</td>\n";
+                elemento = elemento->valorSiguiente;
+            }
+            nodoHoja = nodoHoja->nodoHojaSiguiente;
+            restoDeReporte += "\t\t</tr>\n";
+        }
+        //Para el ultimo nodoHoja
+        ElementoDeTabla *elemento = nodoHoja->elementoDeTabla;
+        cout << "Nuevo ELEMENETO DE TABLA" << endl;
+         restoDeReporte += "\t\t<tr>\n";
+        while (elemento != NULL) {
+            cout << "Atributo:" << elemento->atributo << endl;
+            cout << "ValorDeAtributo:" << elemento->valorDeAtributo << endl;
+            restoDeReporte += "\t\t\t<td>" + elemento->valorDeAtributo + "</td>\n";
+            elemento = elemento->valorSiguiente;
+        }
+         restoDeReporte += "\t\t</tr>\n";
+         primerPagina = primerPagina->paginaSiguiente;
+    }
+
+    //Para cuando solo sea un pagina o es la ultima pagina
+    NodoHoja *nodoHoja = primerPagina->listaDeNodosHoja->nodoHoja;
+    while (nodoHoja->nodoHojaSiguiente != NULL) {
+        ElementoDeTabla *elemento = nodoHoja->elementoDeTabla;
+        cout << "Nuevo ELEMENETO DE TABLA" << endl;
+        restoDeReporte += "\t\t<tr>\n";
+        while (elemento != NULL) {
+            cout << "Atributo:" << elemento->atributo << endl;
+            cout << "ValorDeAtributo:" << elemento->valorDeAtributo << endl;
+            restoDeReporte += "\t\t\t<td>" + elemento->valorDeAtributo + "</td>\n";
+            elemento = elemento->valorSiguiente;
+        }
+        restoDeReporte += "\t\t</tr>\n";
+        nodoHoja = nodoHoja->nodoHojaSiguiente;
+    }
+    //Para el ultimo nodoHoja
+    ElementoDeTabla *elemento = nodoHoja->elementoDeTabla;
+    cout << "Nuevo ELEMENETO DE TABLA" << endl;
+    restoDeReporte += "\t\t<tr>\n";
+    while (elemento != NULL) {
+        cout << "Atributo:" << elemento->atributo << endl;
+        cout << "ValorDeAtributo:" << elemento->valorDeAtributo << endl;
+        restoDeReporte += "\t\t\t<td>" + elemento->valorDeAtributo + "</td>\n";
+        elemento = elemento->valorSiguiente;
+    }
+    restoDeReporte += "\t\t</tr>\n";
+    return restoDeReporte;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void mostrarDatosDePagina(Pagina* primerPagina) {
+    Nodo* listaT = listaDeTablas->PrimerNodo;
     Pagina *raiz = listaDeTablas->PrimerNodo->arbol->paginaRaiz;
     string nombreDeTabla = listaDeTablas->PrimerNodo->tabla;
     Pagina *paginaMasALAIzquierda = buscarPaginaMasALaIzquierda(listaDeTablas->PrimerNodo->arbol->paginaRaiz);
@@ -1157,7 +1429,7 @@ void insertarEnArbol(ElementoDeTabla *elementoDeTabla) {
                 anadirNodoHojaA_Arbol(nodo5, paginaDerecha);
                 //Se anade la pagina Siguiente
                 paginaIzquierda->paginaSiguiente = paginaDerecha;
-                paginaDerecha->paginaAnterior=paginaIzquierda;
+                paginaDerecha->paginaAnterior = paginaIzquierda;
                 //Tomar el tercer elemento de la pagina y con la clave de este crear un nodo pagina anadiendo sus hijos Izquierdo y derecho
                 NodoInterno* nodoInternoRaiz = crearNodoInterno(paginaIzquierda, paginaDerecha, nodo3->clave);
                 Pagina *nuevaPaginaRaiz = crearPagina(NULL, nodoInternoRaiz, NULL);
@@ -1200,7 +1472,7 @@ void anadirNodoInterno(Pagina* pagina, NodoInterno* nuevoNodo) {
     while (nodoActual->nodoInternoSiguiente != NULL) {//Cambio
         val1 = convertirACodigoComparable(nodoActual->clave, tablaParaElemento);
         val2 = convertirACodigoComparable(nuevoNodo->clave, tablaParaElemento);
-        if (val1> val2) {
+        if (val1 > val2) {
             nuevoNodo->nodoInternoSiguiente = nodoActual; //Se cambia
             nodoActual->hijoIzquierdo = nuevoNodo->hijoDerecho; //Se cambian los apuntadores
             if (nodoAnterior == NULL) {//SI era primero de lista
@@ -1221,7 +1493,7 @@ void anadirNodoInterno(Pagina* pagina, NodoInterno* nuevoNodo) {
     if (!seCambio) {
         val1 = convertirACodigoComparable(nodoActual->clave, tablaParaElemento);
         val2 = convertirACodigoComparable(nuevoNodo->clave, tablaParaElemento);
-        if (val1 >val2) {
+        if (val1 > val2) {
             nuevoNodo->nodoInternoSiguiente = nodoActual; //Se cambia
             nodoActual->hijoIzquierdo = nuevoNodo->hijoDerecho; //Se cambian los apuntadores
             if (nodoAnterior == NULL) {//SI era primero de lista
@@ -1261,14 +1533,14 @@ void restructurarArbol(Pagina *pagina, ElementoDeTabla *elemento) {
             paginaIzquierda->paginaSiguiente = paginaDerecha;
             //Pagina derecha debe apuntar a la anterior pagina siguiente
             paginaDerecha->paginaSiguiente = pagina->paginaSiguiente;
-            paginaDerecha->paginaAnterior=paginaIzquierda;
+            paginaDerecha->paginaAnterior = paginaIzquierda;
             //Se anade al padre
-            if(pagina->paginaAnterior!=NULL){//Tenia pagina anterior
-                pagina->paginaAnterior->paginaSiguiente=paginaIzquierda;
-                paginaIzquierda->paginaAnterior=pagina->paginaAnterior;
+            if (pagina->paginaAnterior != NULL) {//Tenia pagina anterior
+                pagina->paginaAnterior->paginaSiguiente = paginaIzquierda;
+                paginaIzquierda->paginaAnterior = pagina->paginaAnterior;
             }
-            if(pagina->paginaSiguiente!=NULL){
-                pagina->paginaSiguiente->paginaAnterior=paginaDerecha;
+            if (pagina->paginaSiguiente != NULL) {
+                pagina->paginaSiguiente->paginaAnterior = paginaDerecha;
             }
 
 
